@@ -1,0 +1,12 @@
+library(data.table)
+energyWithoutQuestionMark <- fread(input = "household_power_consumption.txt", sep = ";", na.strings = "?")
+energyDateFiltered <- energyWithoutQuestionMark[energyWithoutQuestionMark$Date == "1/2/2007" | energyWithoutQuestionMark$Date == "2/2/2007", ]
+energyDateFiltered$datetime <- paste(energyDateFiltered$Date, energyDateFiltered$Time, sep = " ")
+z <- as.POSIXlt(energyDateFiltered$datetime, format = "%d/%m/%Y %H:%M:%S")
+Sys.setlocale("LC_ALL", "English")
+png(filename = "plot3.png", width = 480, height = 480)
+plot(z, energyDateFiltered$Sub_metering_1, type = "l", ylab = "Energy Sub metering", xlab = "")
+lines(z, energyDateFiltered$Sub_metering_2, type = "l", col = "red")
+lines(z, energyDateFiltered$Sub_metering_3, type = "l", col = "blue")
+legend("topright", col = c("black", "red", "blue"), legend = c("Sub_metering_1", "Sub_metering_2", "Sub_metering_3"), lty = c(1,1))
+dev.off()
